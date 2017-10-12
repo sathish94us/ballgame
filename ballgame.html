@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+<style>
+	html, body
+    {
+        margin: 0px; /*undo default margin*/
+        width: 100%; /*set to full width*/
+    }
+
+    /*
+    default height for HTML element
+    */
+    html
+    {
+        height: 100vh; /*100% of viewport hieght*/
+    }
+
+    /*
+    default height for BODY element. For any computation of height in TS files,
+    one should use VIEWPORT / BODY height but not DOCUMENT / HTML height.
+    */
+    body
+    {
+        height: 100vh; /*100% of viewport hieght*/
+    }
+    
+    .mainDiv
+    {
+    	width: 100%;
+        height: 100%;
+        background-color: gray;
+        position: relative;
+    }
+    
+    .subDiv
+    {
+    	width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        position: absolute;
+        background-color: black;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 50%;
+        transition: all 2500ms ease;
+    }
+    
+    .start
+    {
+    	border: none;
+        padding: 5px 10px;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        top: calc(50% + 40px);
+        background-color: black;
+        color: whitesmoke;
+        font-weight: bold;
+        transition: all 1000ms ease;
+        outline: none;
+    }
+    
+    .modalBox
+    {
+    	background-color: rgba(0,0,0,0.4);
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        left: 0;
+    	top: 0;
+    }
+    
+    .modalBoxContent
+    {
+    	width: 50%;
+        background-color: whitesmoke;
+        color: black;
+        padding: 0 10px;
+        position: fixed;
+        left: 50%;
+        top: calc(50% + 40px);
+        transform: translate(-50%, -50%);
+    }
+    
+    .closeModal
+    {
+    	float: right;
+        font-size: large;
+    }
+    .closeModal:hover
+    {
+    	font-weight: bold;
+        cursor: pointer;
+    }
+    
+    .myScore
+    {
+    	display: table;
+        margin: 0 auto;
+    }
+    
+</style>
+</head>
+<body>
+	<div id="md" class="mainDiv">
+    <p id="wh" style="display: none"></p>
+    	<div id="sd" class="subDiv" onclick="ballSizeIncrease();"></div>
+        <button id="startButton" class="start" onclick="showStart=true;gameStart();handleStartButton(false);">start</button>
+    </div>
+    <div id="modalContainer" class="modalBox">
+    	<div class="modalBoxContent">
+        	<span onclick="handleModalBox(false);" id="close" class="closeModal">&times;</span>
+            <br>
+            <br>
+        	<span id="score" class="myScore"></span>
+            <br>
+            <br>
+        </div>
+    </div>    
+<script>
+var endDate;
+var totalTime;
+var ballElement = document.getElementById("sd");
+var startElement = document.getElementById("startButton");
+var modalBoxContainer = document.getElementById("modalContainer");
+modalBoxContainer.style.display = "none";
+var scorePoints = document.getElementById("score");
+var whElement = document.getElementById("wh");
+var bodyElement = document.body;
+var showStart = false;
+function gameStart()
+{
+	var startDate = new Date();
+  var interval = setInterval(function()
+  {
+      var randomPosX = Math.floor((Math.random() * (bodyElement.clientWidth - 10)) + 1);
+      var randomPosY = Math.floor((Math.random() * (bodyElement.clientHeight - 10)) + 1);
+      ballElement.style.left = randomPosX + "px";
+      ballElement.style.top = randomPosY + "px";
+      ballElement.style.width = ( ballElement.clientWidth - ( 0.2 * ballElement.clientWidth ) ) + "px";
+      ballElement.style.height = ( ballElement.clientHeight - ( 0.2 * ballElement.clientHeight ) ) + "px";
+      whElement.innerHTML = "width : " + ballElement.clientWidth + " Height : " + ballElement.clientHeight;
+      if( ballElement.clientWidth < 7 && ballElement.clientHeight < 7 )
+      {
+          endDate = new Date();
+          totalTime = Math.floor((endDate.getTime() - startDate.getTime()) / 1000);
+          clearInterval(interval);
+          handleModalBox(true);
+          ballElement.style.width = "20px";
+          ballElement.style.height = "20px";
+          ballElement.style.left = "50%";
+          ballElement.style.top = "50%";
+          handleStartButton(true);
+      }
+  }, 1000);
+}
+
+function ballSizeIncrease()
+{
+	if( showStart == true )
+    {
+	    ballElement.style.width = ( ballElement.clientWidth + ( 0.3 * ballElement.clientWidth ) ) + "px";
+    ballElement.style.height = ( ballElement.clientHeight + ( 0.3 * ballElement.clientHeight ) ) + "px";
+    }
+}
+
+function handleStartButton( show )
+{
+	if( show == false )
+		startElement.style.display = "none";
+    else
+    {
+    	startElement.style.display = "inline";
+        showStart = false;
+    }
+}
+
+function handleModalBox( showModalBox )
+{
+	if( showModalBox == true )
+    {
+    	scorePoints.innerHTML = "Score : " + totalTime;
+		modalBoxContainer.style.display = "block";
+    }
+    else
+    	modalBoxContainer.style.display = "none";
+}
+</script>
+</body>
+</html>
