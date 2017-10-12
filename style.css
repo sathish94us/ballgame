@@ -1,0 +1,22 @@
+header , footer
+{
+	background :#ccc;
+	height : 40px;
+	width : 100%;
+	text-align : center;
+	padding :20px 0;
+}
+
+main
+{
+	width :1000px;
+	margin :20px auto;
+	font-size : 3em;
+	line-height : 5em;
+}
+
+#scrollButton
+{
+	cursor : pointer;
+	color : blue;
+}
